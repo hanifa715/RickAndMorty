@@ -5,13 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#272B33"
-    tools:context=".ui.CartoonActivity">
+    tools:context=".ui.characters.CharactersActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_cartoon"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        tools:listitem="@layout/item_cartoon"  />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
