@@ -3,8 +3,11 @@ package com.example.rickandmorty.ui.characters
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.rickandmorty.data.Resource
 import com.example.rickandmorty.databinding.ActivityCharactersBinding
 import com.example.rickandmorty.ui.characterDetails.CharacterDetailsActivity
 import com.example.rickandmorty.ui.characters.adapter.CharactersAdapter
@@ -22,9 +25,25 @@ class CharactersActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCharactersBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel.getCharacter().observe(this) {
-            charactersAdapter.submitList(it)
-            setUpCharactersRecycler()
+        setUpCharactersRecycler()
+
+        viewModel.getCharacter().observe(this) { result ->
+            when (result) {
+                is Resource.Error -> {
+                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                    binding.progressBar.isVisible = false
+                }
+
+                is Resource.Loading -> {
+                   binding.progressBar.isVisible = true
+                }
+
+                is Resource.Success -> {
+                    charactersAdapter.submitList(result.data)
+                    binding.progressBar.isVisible = false
+                }
+            }
+
         }
     }
 
