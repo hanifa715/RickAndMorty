@@ -27,6 +27,7 @@ class Repository @Inject constructor(
                         cartoon.postValue(it.results)
                     }
                 }
+                Log.d("onResponse", "данные пришли")
             }
 
             override fun onFailure(call: Call<BaseResponse<Character>>, t: Throwable) {
@@ -49,6 +50,7 @@ class Repository @Inject constructor(
                         cartoon.postValue(it)
                     }
                 }
+                Log.d("onResponseSecondActivity", "данные на второй активити не пришли")
             }
 
             override fun onFailure(call: Call<Character>, t: Throwable) {

@@ -3,6 +3,8 @@ package com.example.rickandmorty.ui.characters.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.rickandmorty.Indicator
 import com.example.rickandmorty.R
 import com.example.rickandmorty.data.Character
@@ -11,7 +13,7 @@ import com.example.rickandmorty.utils.loadImage
 
 class CharactersAdapter(
     private val onClick: (characterId: Int) -> Unit,
-) : RecyclerView.Adapter<CharactersAdapter.CartoonViewHolder>() {
+) :Adapter<CharactersAdapter.CartoonViewHolder>() {
     private var list = listOf<Character>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartoonViewHolder {
@@ -35,7 +37,7 @@ class CharactersAdapter(
     }
 
     inner class CartoonViewHolder(private val binding: ItemCartoonBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+        ViewHolder(binding.root) {
         fun bind(model: Character) = with(binding) {
             imgCharacter.loadImage(model.image)
             tvCharacterName.text = model.name

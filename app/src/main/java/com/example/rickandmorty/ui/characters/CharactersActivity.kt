@@ -24,12 +24,11 @@ class CharactersActivity : AppCompatActivity() {
         setContentView(binding.root)
         viewModel.getCharacter().observe(this) {
             charactersAdapter.submitList(it)
+            setUpCharactersRecycler()
         }
-        setUpCharactersRecycler()
     }
 
     private fun setUpCharactersRecycler() = with(binding.recyclerView) {
-        adapter = charactersAdapter
         layoutManager = LinearLayoutManager(
             this@CharactersActivity,
             LinearLayoutManager.VERTICAL,
