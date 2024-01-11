@@ -1,65 +1,42 @@
 package com.example.rickandmorty.data.repository
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import com.example.rickandmorty.data.RickAndMortyApiService
-import com.example.rickandmorty.data.BaseResponse
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import com.example.rickandmorty.data.Character
 import com.example.rickandmorty.data.Resource
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import javax.inject.Inject
+import com.example.rickandmorty.data.RickAndMortyApiService
+import kotlinx.coroutines.Dispatchers
 
-class Repository @Inject constructor(
-    private val api: RickAndMortyApiService
-) {
+class Repository(private val api: RickAndMortyApiService) {
 
-    fun getCharacter(): MutableLiveData<Resource<List<Character>>> {
-        val cartoon = MutableLiveData<Resource<List<Character>>>()
-        cartoon.postValue(Resource.Loading())
-
-        api.getCharacter().enqueue(object : Callback<BaseResponse<Character>> {
-            override fun onResponse(
-                call: Call<BaseResponse<Character>>,
-                response: Response<BaseResponse<Character>>
-            ) {
-                if (response.isSuccessful && response.body() != null) {
-                    response.body()?.let {
-                        cartoon.postValue(Resource.Success(it.results))
-                    }
+    fun getCharacter(): LiveData<Resource<List<Character>>> = liveData(Dispatchers.IO) {
+        emit(Resource.Loading())
+        try {
+            val response = api.getCharacter()
+            if (response.isSuccessful && response.body() != null) {
+                response.body()?.let {
+                    emit(Resource.Success(it.results))
                 }
-                Log.d("onResponse", "данные пришли")
             }
-
-            override fun onFailure(call: Call<BaseResponse<Character>>, t: Throwable) {
-                cartoon.postValue(Resource.Error(t.localizedMessage ?:"Неизвестная ошибка"))
-                Log.e("ERROR", "onFailure: ${t.localizedMessage}")
-            }
-        })
-        return cartoon
+        } catch (e: Exception) {
+            emit(Resource.Error(e.localizedMessage ?: "Unknown error"))
+        }
     }
 
-    fun getCharacterDetails(id: Int): MutableLiveData<Character> {
-        val cartoon = MutableLiveData<Character>()
+    fun getCharacterDetails(id: Int): LiveData<Character> = liveData(Dispatchers.IO) {
 
-        api.getCharacterDetails(id).enqueue(object : Callback<Character> {
-            override fun onResponse(
-                call: Call<Character>,
-                response: Response<Character>
-            ) {
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        cartoon.postValue(it)
-                    }
+        try {
+            val cartoon = api.getCharacterDetails(id)
+            if (cartoon.isSuccessful) {
+                cartoon.body()?.let {
+                    emit(it)
                 }
-                Log.d("onResponseSecondActivity", "данные на второй активити не пришли")
             }
+        } catch (ex: Exception) {
+            Log.e("failure", "getCharacterDetails")
+        }
 
-            override fun onFailure(call: Call<Character>, t: Throwable) {
-                Log.e("ERROR", "onFailure: ${t.localizedMessage}")
-            }
-        })
-        return cartoon
     }
+
 }

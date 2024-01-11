@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmorty.data.Resource
@@ -12,13 +11,13 @@ import com.example.rickandmorty.databinding.ActivityCharactersBinding
 import com.example.rickandmorty.ui.characterDetails.CharacterDetailsActivity
 import com.example.rickandmorty.ui.characters.adapter.CharactersAdapter
 import com.example.rickandmorty.utils.CartoonKeys
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
+
 class CharactersActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCharactersBinding
-    private val viewModel: CharactersViewModel by viewModels()
+    private val viewModel: CharactersViewModel by viewModel()
     private val charactersAdapter by lazy { CharactersAdapter(this::onClickItem) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
