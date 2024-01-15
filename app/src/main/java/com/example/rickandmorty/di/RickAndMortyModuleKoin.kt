@@ -8,41 +8,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-val cartoonModule by lazy {
-    listOf(networkModule, viewModelModule, repositoryModule)
-}
+val cartoonModule = listOf(networkModule, viewModelModule, repositoryModule)
 
 
-fun provideRetrofit(
-    okHttpClient: OkHttpClient
-): Retrofit {
-    return Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(okHttpClient)
-        .build()
-}
-
-fun provideOkHttpClient(
-    interceptor: HttpLoggingInterceptor
-): OkHttpClient {
-    return OkHttpClient.Builder()
-        .writeTimeout(20, TimeUnit.SECONDS)
-        .readTimeout(20, TimeUnit.SECONDS)
-        .connectTimeout(20, TimeUnit.SECONDS)
-        .callTimeout(20, TimeUnit.SECONDS)
-        .addInterceptor(interceptor)
-        .build()
-}
-
-fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-    val interceptor = HttpLoggingInterceptor()
-    interceptor.level = HttpLoggingInterceptor.Level.BODY
-    return interceptor
-}
-
-fun provideCartoonApiService(
-    retrofit: Retrofit
-): RickAndMortyApiService {
-    return retrofit.create(RickAndMortyApiService::class.java)
-}

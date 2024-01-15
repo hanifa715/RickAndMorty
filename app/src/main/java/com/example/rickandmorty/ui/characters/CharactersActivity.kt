@@ -8,13 +8,14 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmorty.data.Resource
 import com.example.rickandmorty.databinding.ActivityCharactersBinding
+import com.example.rickandmorty.ui.base.BaseActivity
 import com.example.rickandmorty.ui.characterDetails.CharacterDetailsActivity
 import com.example.rickandmorty.ui.characters.adapter.CharactersAdapter
 import com.example.rickandmorty.utils.CartoonKeys
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class CharactersActivity : AppCompatActivity() {
+class CharactersActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCharactersBinding
     private val viewModel: CharactersViewModel by viewModel()
@@ -26,24 +27,13 @@ class CharactersActivity : AppCompatActivity() {
         setContentView(binding.root)
         setUpCharactersRecycler()
 
-        viewModel.getCharacter().observe(this) { result ->
-            when (result) {
-                is Resource.Error -> {
-                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
-                    binding.progressBar.isVisible = false
-                }
-
-                is Resource.Loading -> {
-                   binding.progressBar.isVisible = true
-                }
-
-                is Resource.Success -> {
-                    charactersAdapter.submitList(result.data)
-                    binding.progressBar.isVisible = false
-                }
-            }
-
-        }
+        viewModel.getCharacter().stateHandler(
+            state = { state ->
+                binding.progressBar.isVisible = state is Resource.Loading
+            },
+            success = {
+                charactersAdapter.submitList(it)
+            })
     }
 
     private fun setUpCharactersRecycler() = with(binding.recyclerView) {
